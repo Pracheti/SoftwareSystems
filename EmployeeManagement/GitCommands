@@ -1,0 +1,62 @@
+racheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git --version
+git version 2.25.1
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ sudo apt-get update
+[sudo] password for pracheti: 
+
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git --version
+git version 2.25.1
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem$ ls
+EmployeeManagement  HandOnList_1
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem$ cd EmployeeManagement/
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git init
+Initialized empty Git repository in /home/pracheti/SoftwareSystem/EmployeeManagement/.git/
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ echo "This is a test repository..." >> README.md
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ ll
+total 28
+drwxrwxr-x 3 pracheti pracheti 4096 Aug 12 14:18 ./
+drwxrwxr-x 5 pracheti pracheti 4096 Aug 11 10:17 ../
+-rw-rw-r-- 1 pracheti pracheti 2829 Aug  9 21:51 employee_management.sh
+-rw-rw-r-- 1 pracheti pracheti   59 Aug 12 12:04 employee_records.txt
+-rwxrwxrwx 1 pracheti pracheti 2401 Aug 12 12:04 Employee.sh*
+drwxrwxr-x 7 pracheti pracheti 4096 Aug 12 14:16 .git/
+-rw-rw-r-- 1 pracheti pracheti   29 Aug 12 14:18 README.md
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git init
+Reinitialized existing Git repository in /home/pracheti/SoftwareSystem/EmployeeManagement/.git/
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git config --global user.email "bhale.pracheti@gmail.com"
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git config --global user.name "Pracheti"
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git commit -m "Added README.md"
+[master (root-commit) c131ad2] Added README.md
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git log
+commit c131ad2b59ef7598377c70e85c10486573edae2b (HEAD -> master)
+Author: Pracheti <bhale.pracheti@gmail.com>
+Date:   Sat Aug 12 14:22:24 2023 +0530
+
+    Added README.md
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ git remote add origin https://github.com/Pracheti/SoftwareSystems/
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement$ cd .git
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement/.git$ cat config
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/Pracheti/SoftwareSystems/
+	fetch = +refs/heads/*:refs/remotes/origin/*
+
+pracheti@pracheti-Lenovo-ideapad-320-15IKB:~/SoftwareSystem/EmployeeManagement/.git$ git push -u origin main
+Username for 'https://github.com': bhale.pracheti@gmail.com
+Password for 'https://bhale.pracheti@gmail.com@github.com': 
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/Pracheti/SoftwareSystems/'
+
