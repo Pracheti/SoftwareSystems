@@ -1,20 +1,20 @@
 #include <stdio.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/socket.h> 
+#include <netinet/ip.h> 
+#include <string.h>
+#include <stdlib.h>
+#include "ServerConnectionHandler.h"
 
-#define PORT 8000
+#define PORT 8001
 
-//Function Definition
-Connect_With_Respective_Client(Socket_Descriptor);
 
 int main(){
 	int Socket_File_Descriptor, Bind_Status, Listen_Status, New_Socket_File_Descriptor, No_of_Bytes_Read, No_of_Bytes_Written, Length_of_Address;
-	char Data_Sent_by_Client[100];
+
 	struct sockaddr_in Server_Address, Client_Address;   /* IPv4 socket address */
 	struct in_addr Socket_Address;   /* IPv4 4-byte address : Unsigned 32-bit integer*/
 	
@@ -48,7 +48,9 @@ int main(){
 	
 	while(1){
 		Length_of_Address = sizeof(Client_Address);
-		New_Socket_File_Descriptor = accept(Socket_File_Descriptor, (struct sockaddr *)&Client_Address, &Length_of_Address);	/* int accept(int sockfd , struct sockaddr * addr , socklen_t * addrlen ); */
+		New_Socket_File_Descriptor = accept(Socket_File_Descriptor, (struct sockaddr *)&Client_Address, &Length_of_Address);	
+		/* int accept(int sockfd , struct sockaddr * addr , socklen_t * addrlen ); */
+		
 		if(New_Socket_File_Descriptor == -1){
 			perror("Error creating socket.. ");
 			exit(0);
@@ -57,30 +59,13 @@ int main(){
 		printf("\nServer has accepted connection request with Socket Descriptor : %d", New_Socket_File_Descriptor);
 		
 		if(fork() == 0){ 	//Child Process
+			printf("\nCreated a Child Process to handle new request..");
 			Connect_With_Respective_Client(New_Socket_File_Descriptor);
 			close(New_Socket_File_Descriptor);
 		}
-	}
+	} 
 	close(Socket_File_Descriptor);
 	return 0;
 }
 
-void Connect_With_Respective_Client(int Socket_Descriptor){
-	int choice;
-	read(Socket_Descriptor, &choice, sizeof(choice));
-	
-	switch(choice){
-		case 1:	
-			Connect_With_Admin(Socket_Descriptor);
-			break;
-		case 2:
-			//Connect_With_Faculty(Socket_Descriptor);
-			break;
-		case 3:
-			//Connect_With_Student(Socket_Descriptor);
-			break;
-		default:
-			printf("\n Enter valid choice");
-	
-	}
-}
+
