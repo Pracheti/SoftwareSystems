@@ -60,7 +60,7 @@ int main(){
 	Server_Address.sin_addr.s_addr = htonl(INADDR_ANY);  /* When INADDR_ANY is used as the address when calling bind(), the socket accepts connections to all the IPs of the machine. */
 	
 	
-	Socket_File_Descriptor = socket(AF_INET, SOCK_STREAM, 0);			/* int socket(int domain , int type , int protocol ); */
+	Socket_File_Descriptor = socket(AF_INET, SOCK_STREAM, 0);	/* int socket(int domain , int type , int protocol ); */
 	if(Socket_File_Descriptor == -1){
 		perror("Error creating socket.. ");
 		exit(0);
@@ -79,11 +79,11 @@ int main(){
 		perror("Error while listening.. ");
 		exit(0);
 	}
-	
 	printf("\nServer is listening for incoming Client requests...");
 	
+	Length_of_Address = sizeof(Client_Address);
 	while(1){
-		Length_of_Address = sizeof(Client_Address);
+		
 		New_Socket_File_Descriptor = accept(Socket_File_Descriptor, (struct sockaddr *)&Client_Address, &Length_of_Address);	
 		/* int accept(int sockfd , struct sockaddr * addr , socklen_t * addrlen ); */
 		

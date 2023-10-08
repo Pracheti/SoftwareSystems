@@ -12,19 +12,20 @@
 #define PORT 8000
 
 void Connect_With_Server(int Socket_File_Descriptor){
-	char Menu[1000];
-	ssize_t Bytes_Read, Read_Status;
+	char Menu[1000], Message[1000], User_Input[1000];
+	ssize_t Bytes_Read, Read_Status, Bytes_Written;
 	
 	do{
-		Read_Status = read(Socket_File_Descriptor, Menu, sizeof(Menu));  /* Read Admin Menu from Server.c->Admin.h file*/
+		bzero(Menu, sizeof(Menu));
+		Read_Status = read(Socket_File_Descriptor, Menu, sizeof(Menu));  /* Read Menu from Server.c->Admin.h/Faculty.h/Student.h file*/
 		if(Read_Status == -1)
 			perror("Error while reading Admin Menu from Server");
 		else if(Read_Status == 0)
 			printf("\nUnable to read Menu sent by server");
 		else{
-			write(1, Menu, sizeof(Menu));
+			write(1, Menu, strlen(Menu));
 			char choice;
-			
+			printf("\nEnter your choice : ");
 			Bytes_Read = read(0, &choice, 1);
 			if(Bytes_Read == -1){
 				perror("Error while Reading choice written by Client.. Exiting..");
@@ -32,6 +33,17 @@ void Connect_With_Server(int Socket_File_Descriptor){
 			}	
 			else{
 				write(Socket_File_Descriptor, &choice, 1);
+				do{
+					bzero(User_Input, sizeof(User_Input));
+					Bytes_Read = read(Socket_File_Descriptor, Message, sizeof(Message)); 
+					printf("\n%s\n", Message);
+					scanf("%s", User_Input);
+					Bytes_Written = write(Socket_File_Descriptor, User_Input, sizeof(User_Input));
+					if(Bytes_Written == -1){
+						perror("Error while sending data to server, Please try later");
+						exit(0);
+					}
+				}while(Read_Bytes>0);
 			}	
 		}
 	}while(1);
@@ -42,11 +54,11 @@ int main(){
 	ssize_t Bytes_Written;
 	char choice;
 	struct sockaddr_in Server_Address; 		/* IPv4 socket address */
-	struct in_addr Socket_Address;   /* IPv4 4-byte address : Unsigned 32-bit integer*/
+	struct in_addr Socket_Address;   		/* IPv4 4-byte address : Unsigned 32-bit integer*/
 	
 	Server_Address.sin_family = AF_INET;
 	Server_Address.sin_port = htons(PORT);
-	Server_Address.sin_addr.s_addr = INADDR_ANY;
+	Server_Address.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	Socket_File_Descriptor = socket(AF_INET, SOCK_STREAM, 0);			/* int socket(int domain , int type , int protocol ); */
 	if(Socket_File_Descriptor == -1){
