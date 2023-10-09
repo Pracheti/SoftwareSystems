@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define PORT 8000
+#define PORT 6000
 
 void Connect_With_Server(int Socket_File_Descriptor){
 	char Menu[1000], Message[1000], User_Input[1000];
@@ -23,7 +23,9 @@ void Connect_With_Server(int Socket_File_Descriptor){
 		else if(Read_Status == 0)
 			printf("\nUnable to read Menu sent by server");
 		else{
-			write(1, Menu, strlen(Menu));
+			Bytes_Read = write(1, Menu, strlen(Menu));
+			if(Bytes_Read == -1)
+				printf("\nUnable to read Menu sent by Server");
 			char choice;
 			printf("\nEnter your choice : ");
 			Bytes_Read = read(0, &choice, 1);
@@ -36,14 +38,14 @@ void Connect_With_Server(int Socket_File_Descriptor){
 				do{
 					bzero(User_Input, sizeof(User_Input));
 					Bytes_Read = read(Socket_File_Descriptor, Message, sizeof(Message)); 
-					printf("\n%s\n", Message);
+					printf("\n%s", Message);
 					scanf("%s", User_Input);
 					Bytes_Written = write(Socket_File_Descriptor, User_Input, sizeof(User_Input));
 					if(Bytes_Written == -1){
 						perror("Error while sending data to server, Please try later");
 						exit(0);
 					}
-				}while(Read_Bytes>0);
+				}while(Bytes_Read>0);
 			}	
 		}
 	}while(1);
@@ -53,6 +55,7 @@ int main(){
 	int Socket_File_Descriptor, Connection_Status;
 	ssize_t Bytes_Written;
 	char choice;
+	
 	struct sockaddr_in Server_Address; 		/* IPv4 socket address */
 	struct in_addr Socket_Address;   		/* IPv4 4-byte address : Unsigned 32-bit integer*/
 	
@@ -68,12 +71,13 @@ int main(){
 
 	Connection_Status = connect(Socket_File_Descriptor, (struct sockaddr *)&Server_Address, sizeof(Server_Address)); /* int connect(int sockfd , const struct sockaddr * addr , socklen_t addrlen ); */
 	if(Connection_Status == -1){
-		perror("Error connectioning to the server...");
+		perror("Server Down!! Please try again later..");
 		close(Socket_File_Descriptor);
         exit(0);
 	}
+	//printf("Connection status : %d", Connection_Status);  //(Should print 0, if successful)
 	
-	printf("\nSuccessfully connected with the Server...");
+	printf("Successfully connected with the Server...\n");
 	printf("\n****************WELCOME TO COURSE REGISTRATION PORTAL********************");
 	printf("\n1. Admin");
 	printf("\n2. Faculty");
@@ -89,7 +93,6 @@ int main(){
 	}
 	
 	Connect_With_Server(Socket_File_Descriptor);
-	
 	close(Socket_File_Descriptor);
 	
 	return 0;

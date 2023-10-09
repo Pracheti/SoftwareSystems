@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "Admin.h"
 
-#define PORT 8000
+#define PORT 6000
 
 void Connect_With_Client(int Socket_Descriptor){
 	int User_choice;
@@ -79,14 +79,13 @@ int main(){
 		perror("Error while listening.. ");
 		exit(0);
 	}
-	printf("\nServer is listening for incoming Client requests...");
+	printf("\nServer is listening for incoming Client requests..." );
 	
 	Length_of_Address = sizeof(Client_Address);
 	while(1){
 		
 		New_Socket_File_Descriptor = accept(Socket_File_Descriptor, (struct sockaddr *)&Client_Address, &Length_of_Address);	
 		/* int accept(int sockfd , struct sockaddr * addr , socklen_t * addrlen ); */
-		
 		if(New_Socket_File_Descriptor == -1){
 			perror("Error creating socket.. ");
 			exit(0);
@@ -94,7 +93,7 @@ int main(){
 		printf("\nServer has accepted connection request with Socket Descriptor : %d", New_Socket_File_Descriptor);
 		
 		if(fork() == 0){ 	//Child Process
-			//printf("\nCreated a Child Process to handle new request..");
+			printf("\nCreated a Child Process to handle new request..");
 			Connect_With_Client(New_Socket_File_Descriptor);
 			close(New_Socket_File_Descriptor);
 		}
