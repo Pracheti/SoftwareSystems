@@ -43,8 +43,8 @@ void Connect_With_Client(int Socket_Descriptor){
 		}
 	} 
 
-    printf("Terminating connection to client!\n");
-
+    printf("Reached end of Server Connection Handler! \n");
+	close(Socket_Descriptor);
 }
 
 int main(){

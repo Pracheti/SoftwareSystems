@@ -12,7 +12,7 @@
 #define PORT 6000
 
 void Connect_With_Server(int Socket_File_Descriptor){
-	char Menu[1000], Message[1000], User_Input[1000];
+	char Menu[1000], Message[1000], User_Input[1000], choice;
 	ssize_t Bytes_Read, Read_Status, Bytes_Written;
 	
 	do{
@@ -23,14 +23,13 @@ void Connect_With_Server(int Socket_File_Descriptor){
 		else if(Read_Status == 0)
 			printf("\nUnable to read Menu sent by server");
 		else{
-			Bytes_Read = write(1, Menu, strlen(Menu));
+			Bytes_Read = write(1, Menu, strlen(Menu));  /* Writing MENU to the terminal */ 
 			if(Bytes_Read == -1)
 				printf("\nUnable to read Menu sent by Server");
-			char choice;
-			printf("\nEnter your choice : ");
+			
 			Bytes_Read = read(0, &choice, 1);
 			if(Bytes_Read == -1){
-				perror("Error while Reading choice written by Client.. Exiting..");
+				perror("Error while Reading choice written by Server.. Exiting..");
 				close(Socket_File_Descriptor);
 			}	
 			else{
@@ -85,7 +84,7 @@ int main(){
 	printf("\n4. Exit");
 	printf("\nEnter login type : ");
 	scanf("%c", &choice);
-	printf("\n**************************************************************************");
+	//printf("\n**************************************************************************");
 	Bytes_Written = write(Socket_File_Descriptor, &choice, 1);
 	if(Bytes_Written == -1){
 		perror("Unable to write data to server..");
@@ -97,3 +96,4 @@ int main(){
 	
 	return 0;
 }
+
