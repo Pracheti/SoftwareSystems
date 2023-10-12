@@ -1,7 +1,4 @@
-#include <stdbool.h>
-#include "Common.h"
-
-//Function Declaration
+//Function Declaration	
 void Add_New_Student(int Socket_Descriptor);
 void Add_New_Faculty(int Socket_Descriptor);
 void Activate_Student(int Socket_Descriptor);
@@ -17,7 +14,7 @@ void Connect_With_Admin(int Socket_Descriptor){
 	//Credentials_Check();
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
-	//do{
+	do{
 	/* char *strcat(char *destination, const char *source) */
 		strcat(Write_Buffer, "\n*************WELCOME TO ADMIN PORTAL*************");
 		strcat(Write_Buffer, "\n1. Add new Student");
@@ -43,7 +40,7 @@ void Connect_With_Admin(int Socket_Descriptor){
 				case 2:
 					Add_New_Faculty(Socket_Descriptor);
 					break;
-				case 3:
+				/*case 3:
 					Activate_Student(Socket_Descriptor);
 					break;
 				case 4:
@@ -58,17 +55,17 @@ void Connect_With_Admin(int Socket_Descriptor){
 				case 7:
 					close(Socket_Descriptor);
 					break;
-				default:
+				default:  */
 					printf("\nEnter valid choice");
 			}
 		}
-	//}while(User_choice != 7);
+	}while(User_choice != 7);
 }
 
 void Add_New_Student(int Socket_Descriptor){
 	ssize_t Write_Status, Read_Status;
 	char Read_Buffer[1000], Write_Buffer[1000], Buffer;
-	struct Student details;
+	struct Student details, previous_details;
 	
 	int File_Descriptor = open("Student.txt", O_RDWR);
 	if(File_Descriptor == -1)
@@ -76,17 +73,15 @@ void Add_New_Student(int Socket_Descriptor){
 		
 	//Checking if file is empty & fetching value of Id
 	int position = lseek(File_Descriptor, 0, SEEK_SET);
-	if(position == 0){
-		Read_Status = read(File_Descriptor, &Buffer, 1);
-		if(Read_Status == 0)					//File is Empty
-			details.Id = 1;
-		else{
-			lseek(File_Descriptor, -1 * (sizeof(struct Student)), SEEK_END);
-			details.Id = read(File_Descriptor, (int*) &Buffer, 1);
-			details.Id += 1;
-		}
+	Read_Status = read(File_Descriptor, &Buffer, 1);
+	if(Read_Status == 0)					//File is Empty
+		details.Id = 1;
+	else{
+		lseek(File_Descriptor, -1 * (sizeof(struct Student)), SEEK_END);
+		read(File_Descriptor, &(previous_details), sizeof(struct Student));
+		details.Id = previous_details.Id + 1;
 	}
-	
+		
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	strcat(Write_Buffer, "Enter Student Name : ");
 	Write_Status = write(Socket_Descriptor, Write_Buffer, strlen(Write_Buffer));
@@ -94,8 +89,10 @@ void Add_New_Student(int Socket_Descriptor){
 		perror("Error while reading data sent by Client, Exiting");
 		exit(0);
 	}
-	Read_Status = read(Socket_Descriptor, (char*)details.Name, 100);
-	
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, 1000);
+	strcpy(details.Name, Read_Buffer);
+
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	strcat(Write_Buffer, "Enter Student Age : ");
 	Write_Status = write(Socket_Descriptor, &Write_Buffer, strlen(Write_Buffer));
@@ -103,17 +100,20 @@ void Add_New_Student(int Socket_Descriptor){
 		perror("Error while reading data sent by Client, Exiting");
 		exit(0);
 	}
-	Read_Status = read(Socket_Descriptor, Read_Buffer, sizeof(Read_Buffer));
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, sizeof(Read_Buffer));
 	details.Age = atoi(Read_Buffer);
 	
+		
 	bzero(Write_Buffer, sizeof(Write_Buffer));
+	bzero(Read_Buffer, sizeof(Read_Buffer));
 	strcat(Write_Buffer, "Enter Student Year : ");
 	Write_Status = write(Socket_Descriptor, &Write_Buffer, strlen(Write_Buffer));
 	if(Write_Status == -1){
 		perror("Error while reading data sent by Client, Exiting");
 		exit(0);
 	}
-	Read_Status = read(Socket_Descriptor, Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, sizeof(Read_Buffer));
 	details.Year = atoi(Read_Buffer);
 	
 	details.Status = true;
@@ -149,34 +149,29 @@ void Add_New_Faculty(int Socket_Descriptor){
 		perror("Error opening Faculty.txt file");
 		
 	//Checking if file is empty & fetching value of Id
-	int position = lseek(File_Descriptor, 0, SEEK_SET);
-	if(position == 0){
-		Read_Status = read(File_Descriptor, &Buffer, 1);
-		if(Read_Status == 0)					//File is Empty
-			details.Id = 1;
-		else{
-			lseek(File_Descriptor, -1 * (sizeof(struct Faculty)), SEEK_END);
-			details.Id = read(File_Descriptor, (int*) &Buffer, 1);
-			details.Id += 1;
-		}
+	Read_Status = read(File_Descriptor, &Buffer, 1);
+	if(Read_Status == 0)					//File is Empty
+		details.Id = 1;
+	else{
+		lseek(File_Descriptor, -1 * (sizeof(struct Faculty)), SEEK_END);
+		details.Id = read(File_Descriptor, (int*) &Buffer, 1);
+		details.Id += 1;
 	}
+	
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	strcat(Write_Buffer, "Enter Faculty Name : ");
 	Write_Status = write(Socket_Descriptor, Write_Buffer, strlen(Write_Buffer));
-	if(Write_Status == -1){
-		perror("Error while reading data sent by Client, Exiting");
-		exit(0);
-	}
-	Read_Status = read(Socket_Descriptor, (char*)details.Name, 100);
+	Check_Read_Status(Read_Status);
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, 1000);
+	strcpy(details.Name, Read_Buffer);
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	strcat(Write_Buffer, "Enter Faculty Age : ");
 	Write_Status = write(Socket_Descriptor, &Write_Buffer, strlen(Write_Buffer));
-	if(Write_Status == -1){
-		perror("Error while reading data sent by Client, Exiting");
-		exit(0);
-	}
+	Check_Read_Status(Read_Status);
+	bzero(Read_Buffer, sizeof(Read_Buffer));
 	Read_Status = read(Socket_Descriptor, Read_Buffer, sizeof(Read_Buffer));
 	details.Age = atoi(Read_Buffer);
 	
@@ -185,11 +180,10 @@ void Add_New_Faculty(int Socket_Descriptor){
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	strcat(Write_Buffer, "Enter Course taught : ");
 	Write_Status = write(Socket_Descriptor, Write_Buffer, strlen(Write_Buffer));
-	if(Write_Status == -1){
-		perror("Error while reading data sent by Client, Exiting");
-		exit(0);
-	}
-	Read_Status = read(Socket_Descriptor, (char*)details.Course, 100);
+	Check_Read_Status(Read_Status);
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, 1000);
+	strcpy(details.Course, Read_Buffer);
 	
 	struct flock lock;
 	lock.l_type = F_WRLCK;
@@ -211,7 +205,7 @@ void Add_New_Faculty(int Socket_Descriptor){
 	printf("\nCourse : %s", details.Course);
 	printf("\nActivation Status : %d", details.Status);
 }
-
+/*
 void Activate_Student(int Socket_Descriptor){
 	ssize_t Write_Status, Read_Status;
 	char Read_Buffer[1000], Write_Buffer[1000], Buffer;
@@ -518,3 +512,5 @@ void Update_Faculty(int Socket_Descriptor){
 		}
 	}while(Read_Status != 0);
 }
+
+*/

@@ -38,8 +38,10 @@ void Connect_With_Server(int Socket_File_Descriptor){
 					bzero(User_Input, sizeof(User_Input));
 					Bytes_Read = read(Socket_File_Descriptor, Message, sizeof(Message)); 
 					printf("\n%s", Message);
+					if(Bytes_Read == 0)
+						break;
 					scanf("%s", User_Input);
-					Bytes_Written = write(Socket_File_Descriptor, User_Input, sizeof(User_Input));
+					Bytes_Written = write(Socket_File_Descriptor, User_Input, 1000);
 					if(Bytes_Written == -1){
 						perror("Error while sending data to server, Please try later");
 						exit(0);

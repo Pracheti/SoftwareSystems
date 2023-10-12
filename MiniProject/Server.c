@@ -7,7 +7,10 @@
 #include <netinet/ip.h> 
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "Common.h"
 #include "Admin.h"
+#include "Student.h"
 
 #define PORT 6000
 
@@ -35,7 +38,7 @@ void Connect_With_Client(int Socket_Descriptor){
 				//Connect_With_Faculty(Socket_Descriptor);
 				break;
 			case 3:
-				//Connect_With_Student(Socket_Descriptor);
+				Connect_With_Student(Socket_Descriptor);
 				break;
 			default:
 				printf("\nEnter valid choice");
@@ -43,7 +46,7 @@ void Connect_With_Client(int Socket_Descriptor){
 		}
 	} 
 
-    printf("Reached end of Server Connection Handler! \n");
+    printf("\nReached end of Server Connection Handler! \n");
 	close(Socket_Descriptor);
 }
 
