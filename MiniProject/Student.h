@@ -11,7 +11,7 @@ void Connect_With_Student(int Socket_Descriptor){
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	//do{
 	/* char *strcat(char *destination, const char *source) */
-		strcat(Write_Buffer, "\n*************WELCOME TO ADMIN PORTAL*************");
+		strcat(Write_Buffer, "\n*************WELCOME TO STUDENT PORTAL*************");
 		strcat(Write_Buffer, "\n1. Enroll to new course");
 		strcat(Write_Buffer, "\n2. Unenroll from already enrolled courses");
 		strcat(Write_Buffer, "\n3. View Enrolled courses");
@@ -52,44 +52,31 @@ void Connect_With_Student(int Socket_Descriptor){
 void Enroll_New_Course(int Socket_Descriptor){
 	ssize_t Write_Status, Read_Status;
 	char Read_Buffer[1000], Write_Buffer[1000], Buffer;
-	struct Enroll details, previous_details;
+	struct Enroll details;
 	
 	int File_Descriptor = open("Course.txt", O_RDWR);
 	if(File_Descriptor == -1)
 		perror("Error opening Course.txt file");
 		
 	//Checking if file is empty & fetching value of Id
-	int position = lseek(File_Descriptor, 0, SEEK_SET);
+	lseek(File_Descriptor, 0, SEEK_SET);
 	Read_Status = read(File_Descriptor, &Buffer, 1);
-	if(Read_Status == 0)					//File is Empty
-		details.EnrollId = 1;
-	else{
-		lseek(File_Descriptor, -1 * (sizeof(struct Enroll)), SEEK_END);
-		read(File_Descriptor, &(previous_details), sizeof(struct Enroll));
-		details.EnrollId = previous_details.EnrollId + 1;
-	}
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
-	bzero(Read_Buffer, sizeof(Read_Buffer));
-	strcat(Write_Buffer, "Enter Student Id : ");
+	strcat(Write_Buffer, "Enter Student ID : ");
 	Write_Status = write(Socket_Descriptor, &Write_Buffer, strlen(Write_Buffer));
-	if(Write_Status == -1){
-		perror("Error while reading data sent by Client, Exiting");
-		exit(0);
-	}
-	Read_Status = read(Socket_Descriptor, Read_Buffer, sizeof(Read_Buffer));
-	details.StudentId = atoi(Read_Buffer);
+	Check_Write_Status(Write_Status);
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, sizeof(Read_Buffer));
+	details.Faculty_Id = atoi(Read_Buffer);
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
-	bzero(Read_Buffer, sizeof(Read_Buffer));
-	strcat(Write_Buffer, "Enter Course Id : ");
+	strcat(Write_Buffer, "Enter Course ID : ");
 	Write_Status = write(Socket_Descriptor, &Write_Buffer, strlen(Write_Buffer));
-	if(Write_Status == -1){
-		perror("Error while reading data sent by Client, Exiting");
-		exit(0);
-	}
-	Read_Status = read(Socket_Descriptor, Read_Buffer, sizeof(Read_Buffer));
-	details.CourseId = atoi(Read_Buffer);
+	Check_Write_Status(Write_Status);
+	bzero(Read_Buffer, sizeof(Read_Buffer));
+	Read_Status = read(Socket_Descriptor, &Read_Buffer, sizeof(Read_Buffer));
+	details.Course_Id = atoi(Read_Buffer);	
 	
 	struct flock lock;
 	lock.l_type = F_WRLCK;
@@ -107,7 +94,6 @@ void Enroll_New_Course(int Socket_Descriptor){
 	printf("\nFollowing details have been added to the file : ");
 	printf("\nStudentId : %d", details.StudentId);
 	printf("\nCourseId : %d", details.CourseId);
-	printf("\nEnrollId : %d", details.EnrollId);
 }
 
 void Unenroll_Course(int Socket_Descriptor){
