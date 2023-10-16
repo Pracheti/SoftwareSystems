@@ -15,6 +15,22 @@ void Connect_With_Server(int Socket_File_Descriptor){
 	char Menu[1000], Message[1000], User_Input[1000], choice;
 	ssize_t Bytes_Read, Read_Status, Bytes_Written;
 	
+	//Login Check
+	do{
+		bzero(User_Input, sizeof(User_Input));
+		Bytes_Read = read(Socket_File_Descriptor, Message, sizeof(Message)); 
+		printf("\n%s", Message);
+		if(Bytes_Read == 0)
+			break;
+		scanf("%s", User_Input);
+		
+		Bytes_Written = write(Socket_File_Descriptor, User_Input, 1000);
+		if(Bytes_Written == -1){
+			perror("Error while sending data to server, Please try later");
+			exit(0);
+		}
+	}while(Bytes_Read>0);
+	
 	do{
 		bzero(Menu, sizeof(Menu));
 		Read_Status = read(Socket_File_Descriptor, Menu, sizeof(Menu));  /* Read Menu from Server.c->Admin.h/Faculty.h/Student.h file*/
@@ -98,4 +114,3 @@ int main(){
 	
 	return 0;
 }
-

@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "Common.h"
-//#include "Admin.h"
-//#include "Student.h"
+#include "Admin.h"
+#include "Student.h"
 #include "Faculty.h"
 
 #define PORT 6000
@@ -33,13 +33,13 @@ void Connect_With_Client(int Socket_Descriptor){
 		switch(User_choice){
 			case 1:	
 				//printf("Inside Server Conn Handler");
-				//Connect_With_Admin(Socket_Descriptor);
+				Connect_With_Admin(Socket_Descriptor);
 				break;
 			case 2:
 				Connect_With_Faculty(Socket_Descriptor);
 				break;
 			case 3:
-				//Connect_With_Student(Socket_Descriptor);
+				Connect_With_Student(Socket_Descriptor);
 				break;
 			default:
 				printf("\nEnter valid choice");
