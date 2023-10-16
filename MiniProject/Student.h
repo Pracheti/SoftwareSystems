@@ -4,10 +4,10 @@ void Unenroll_Course(int Socket_Descriptor);
 void View_Enrolled_Courses(int Socket_Descriptor);
 
 void Connect_With_Student(int Socket_Descriptor){
-	int User_choice;
+	int User_choice, Login_Id;
 	ssize_t Write_Status, Bytes_Read;
 	char Write_Buffer[1000], choice[100];
-	//Credentials_Check();
+	Login_Id = Login_Check(Socket_Descriptor, 3);
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
 	//do{

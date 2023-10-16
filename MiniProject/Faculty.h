@@ -4,13 +4,13 @@ void Remove_Offered_Course(int Socket_Descriptor);
 void View_Enrollment_In_Courses(int Socket_Descriptor);
 
 void Connect_With_Faculty(int Socket_Descriptor){
-	int User_choice;
+	int User_choice, Login_Id;
 	ssize_t Write_Status, Bytes_Read;
 	char Write_Buffer[1000], choice[100];
-	//Credentials_Check();
+	Login_Id = Login_Check(Socket_Descriptor, 2);
 	
 	bzero(Write_Buffer, sizeof(Write_Buffer));
-	//do{
+	while(1){
 	/* char *strcat(char *destination, const char *source) */
 		strcat(Write_Buffer, "\n*************WELCOME TO FACULTY PORTAL*************");
 		strcat(Write_Buffer, "\n1. Add new Course");
@@ -29,13 +29,13 @@ void Connect_With_Faculty(int Socket_Descriptor){
 			User_choice = atoi(choice);
 			switch(User_choice){
 				case 1:	
-					Add_New_Course(Socket_Descriptor);
+					//Add_New_Course(Socket_Descriptor);
 					break;
 				case 2:
-					Remove_Offered_Course(Socket_Descriptor);
+					//Remove_Offered_Course(Socket_Descriptor);
 					break;
 				case 3:
-					View_Enrollment_In_Courses(Socket_Descriptor);
+					//View_Enrollment_In_Courses(Socket_Descriptor);
 					break;
 				case 4:
 					//Password_Change(Socket_Descriptor);
@@ -44,12 +44,15 @@ void Connect_With_Faculty(int Socket_Descriptor){
 					close(Socket_Descriptor);
 					break;
 				default:
-					printf("\nEnter valid choice");
+					bzero(Write_Buffer, sizeof(Write_Buffer));
+					strcat(Write_Buffer, "Enter valid choice : ");
+					Write_Status = write(Socket_Descriptor, Write_Buffer, strlen(Write_Buffer));
+					Check_Write_Status(Write_Status);
 			}
 		}
-	//}while(User_choice != 7);
+	}
 }
-
+/*
 void Add_New_Course(int Socket_Descriptor){
 	ssize_t Write_Status, Read_Status;
 	char Read_Buffer[1000], Write_Buffer[1000];
@@ -184,3 +187,4 @@ void View_Enrollment_In_Courses(int Socket_Descriptor){
 	
 
 }
+*/
