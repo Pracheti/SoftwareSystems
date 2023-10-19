@@ -24,7 +24,7 @@ void Connect_With_Server(int Socket_File_Descriptor){
 			break;
 		scanf("%s", User_Input);
 		
-		Bytes_Written = write(Socket_File_Descriptor, User_Input, 1000);
+		Bytes_Written = write(Socket_File_Descriptor, User_Input, strlen(User_Input));
 		if(Bytes_Written == -1){
 			perror("Error while sending data to server, Please try later");
 			exit(0);
@@ -37,12 +37,13 @@ void Connect_With_Server(int Socket_File_Descriptor){
 		if(Read_Status == -1)
 			perror("Error while reading Admin Menu from Server");
 		else if(Read_Status == 0)
-			printf("\nUnable to read Menu sent by server");
+			printf(" \nUnable to read Menu sent by server");
 		else{
-			Bytes_Read = write(1, Menu, strlen(Menu));  /* Writing MENU to the terminal */ 
+			Bytes_Read = write(1, Menu, strlen(Menu));  // Writing MENU to the terminal 
 			if(Bytes_Read == -1)
 				printf("\nUnable to read Menu sent by Server");
 			
+			//printf("%s", Menu);
 			Bytes_Read = read(0, &choice, 1);
 			if(Bytes_Read == -1){
 				perror("Error while Reading choice written by Server.. Exiting..");
@@ -51,13 +52,14 @@ void Connect_With_Server(int Socket_File_Descriptor){
 			else{
 				write(Socket_File_Descriptor, &choice, 1);
 				do{
-					bzero(User_Input, sizeof(User_Input));
+					bzero(Message, sizeof(Message));
 					Bytes_Read = read(Socket_File_Descriptor, Message, sizeof(Message)); 
 					printf("\n%s", Message);
 					if(Bytes_Read == 0)
 						break;
 					scanf("%s", User_Input);
-					Bytes_Written = write(Socket_File_Descriptor, User_Input, 1000);
+					bzero(User_Input, sizeof(User_Input));
+					Bytes_Written = write(Socket_File_Descriptor, User_Input, sizeof(User_Input));
 					if(Bytes_Written == -1){
 						perror("Error while sending data to server, Please try later");
 						exit(0);
