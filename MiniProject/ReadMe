@@ -1,0 +1,12 @@
+Design and Development of Course Registration Portal (Academia)
+
+Key Features Include:
+
+Storage : All student, faculty, enrollment and course details are stored in files.
+Login System :  All users must pass through a login system.
+User Types : Admin, Student and Faculty.
+Administrative Privileges : Add Student and Faculty, Update students and faculty details, activate/deactivate student and viewing all student/faculty details.
+Socket Programming : The server maintains a database and serves multiple clients concurrently, allowing clients to connect and access their account.
+System call : System calls are used instead of library functions for process management, file management , file locking and IPC.
+Student : Can enroll and unenroll to new courses, view enrolled courses and change password.
+Faculty : Add new course, remove new course, view enrollments in course and change password.
